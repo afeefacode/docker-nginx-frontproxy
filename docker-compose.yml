@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+
+  nginx:
+    container_name: nginx-frontproxy
+    hostname: nginx
+    build: .
+    image: nginx-frontproxy
+    volumes:
+      - ./servers:/servers
+    ports:
+      - 80:80
+      - 443:443
+    networks:
+      - nginx-frontproxy
+
+networks:
+  nginx-frontproxy:
+    name: nginx-frontproxy

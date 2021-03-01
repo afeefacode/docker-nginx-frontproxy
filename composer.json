@@ -1,0 +1,10 @@
+{
+    "require": {
+        "afeefa/cli-app": "^0.0.19"
+    },
+    "autoload": {
+        "psr-4": {
+            "Afeefa\\NginxFrontProxy\\": "cli"
+        }
+    }
+}

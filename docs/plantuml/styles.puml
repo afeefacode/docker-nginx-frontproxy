@@ -1,0 +1,33 @@
+@startuml
+skinparam defaultTextAlignment center
+skinparam Shadowing false
+
+skinparam RectangleBorderColor white
+skinparam RectangleBorderThickness 0
+skinparam RectangleBorderThickness<<border>> .1
+skinparam RectangleBorderColor<<border>> black
+
+skinparam CardBorderColor white
+skinparam CardBorderThickness 0
+skinparam CardBackgroundColor #CCCCff
+skinparam CardDefaultTextAlignment left
+skinparam CardBorderThickness<<border>> .1
+skinparam CardBorderColor<<border>> black
+
+skinparam CloudBorderColor #999999
+
+skinparam FileBorderColor #999
+skinparam FileBorderThickness 1
+
+skinparam ComponentBorderColor black
+skinparam ComponentBorderThickness .1
+
+skinparam NoteBackgroundColor #FFFFee
+skinparam NoteBorderThickness .1
+skinparam NoteBorderColor black
+
+skinparam ArrowColor #999
+
+!define ICONURL https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/v2.2.0
+!includeurl ICONURL/common.puml
+@enduml

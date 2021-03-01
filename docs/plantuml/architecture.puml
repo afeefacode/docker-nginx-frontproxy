@@ -1,0 +1,81 @@
+@startuml Architecture
+title Architecture\n
+
+!includeurl ./styles.puml
+
+!includeurl ICONURL/devicons2/nginx_original.puml
+!includeurl ICONURL/devicons2/nodejs.puml
+!includeurl ICONURL/devicons2/php.puml
+!includeurl ICONURL/devicons2/vuejs_wordmark.puml
+
+!includeurl ICONURL/font-awesome-5/laptop.puml
+
+together {
+  FA5_LAPTOP(gui, Client, rectangle, #9999FF) #fff
+
+  card hosts #EEEEFF [
+    <b>/etc/hosts
+    project1.test -> localhost
+    project2.test -> localhost
+  ]
+
+  gui -right-> hosts : https://project1.test
+}
+
+cloud "Docker\n" {
+  rectangle #fff {
+    component "Frontproxy" as nginxProxyContainer {
+      DEV2_NGINX_ORIGINAL(nginxProxy, Nginx, rectangle, #009900) #eee
+
+      card conf #EEEEFF [
+        project1.test.conf
+        project2.test.conf
+      ]
+
+      nginxProxy -> conf
+    }
+
+    hosts -down-> nginxProxy : project1.test:443
+
+    note left of nginxProxyContainer
+      The front proxy listens on
+      ports 443 and 80 on the host
+      and delegates all requests
+      to connected docker containers
+    end note
+
+    component "Project1" {
+      DEV2_NGINX_ORIGINAL(nginxProject1, Nginx, rectangle, #009900) #eee
+
+      note left of nginxProject1
+        Project1 composes a few
+        services, accessible via
+        project level nginx instance
+      end note
+
+      DEV2_NODEJS(nodeProject1, NodeJS, rectangle, #009900) #fff
+      DEV2_NODEJS(socketProject1, SocketJS, rectangle, #009900) #fff
+      DEV2_PHP(phpProject1, PHP, rectangle, #8993be) #fff
+
+      nginxProject1 -down-> phpProject1 : <b>*.php\nphp:9000
+      nginxProject1 -down-> socketProject1 : <b>/sockjs\nsocket:3000
+      nginxProject1 -down-> nodeProject1 : <b>/frontend\nnode:3000
+    }
+
+    component "Project2" {
+      DEV2_VUEJS_WORDMARK(vueProject2, VueJS, rectangle, #009966) #eee
+
+      note left of vueProject2
+        Project2 is a standard
+        node server running
+        on port 8080
+      end note
+    }
+
+    nginxProxy -down-> nginxProject1 : project1:80
+    nginxProxy -down-> vueProject2 : project2:8080
+
+  }
+}
+
+@enduml
