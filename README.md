@@ -34,33 +34,10 @@ To access these projects from the host machine, e.g. via `http://project1.test`,
 
 * The host defines a number of local domains in its `/etc/hosts` file
 * The front proxy consists of a vhost.conf for each of these local domains
-* Any http request to port 80 or 443 gets delegated to the front proxy server
-* The front proxy examines the requests host header field and passes the request further to the projects docker services
+* Any http request to port 80 or 443 on the host gets delegated to the front proxy server
+* The front proxy passes the request further to the appropriate projects docker services
 
 ![architecture](https://raw.githubusercontent.com/afeefacode/docker-nginx-frontproxy/main/docs/architecture.png "architecture")
-
-### Handling more complex projects
-
-A project may consist of multiple sub services (frontend, backend, websockets, ...) which all should be publicly accessed. In this case it's common to put a local nginx proxy at project level in front of those sub services and provide access via custom url.
-
-```nginx
-resolver 127.0.0.11;
-
-location /frontend/sockjs-node/ { # browsersync
-    set $vue "vue:8080";
-    proxy_pass http://$vue;
-    proxy_http_version 1.1;
-    proxy_set_header Upgrade $http_upgrade;
-    proxy_set_header Connection "Upgrade";
-}
-
-location /frontend { # vue dev server
-    set $vue "vue:8080";
-    proxy_pass http://$vue;
-}
-```
-
-Yes, this will make up a chain of two proxy servers (front, project).
 
 ## Installation
 
@@ -125,3 +102,54 @@ You might use the hostess tool (see above).
 ```bash
 hostess rm my-domain.test
 ```
+
+## Handling more complex projects
+
+A project may consist of multiple sub services (frontend, backend, websockets, ...) which all should be publicly accessed. In this case it's common to put a local nginx proxy at project level in front of those sub services and provide access via custom url.
+
+```nginx
+location /frontend/sockjs-node/ { # browsersync
+    proxy_pass vue:8080;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "Upgrade";
+}
+
+location /frontend { # vue dev server
+    proxy_pass vue:8080;
+}
+```
+
+Yes, this will make up a chain of two proxy servers (front, project).
+
+## Example of a more complex project
+
+You can find an example project configuration in the `èxample` folder. The project consists of two node services as well as a PHP api. The project utilizes an internal nginx web server to bundle all services together. To run the example you need to setup `docker-nginx-frontproxy` first. Then:
+
+```bash
+cd example
+docker-compose up
+```
+
+The project's nginx instance exposes (for testing purposes) an accessible port 8080, so you can just open firefox and request `http://localhost:8080`.
+
+![localhost8080](https://raw.githubusercontent.com/afeefacode/docker-nginx-frontproxy/main/docs/localhost8080.png "localhost8080")
+
+Note, the secure http version does not work here - you'll see when trying to call `https://localhost:8080`. SSL is configured not at project but at front proxy level.
+
+![localhost8080ssl](https://raw.githubusercontent.com/afeefacode/docker-nginx-frontproxy/main/docs/localhost8080ssl.png "localhost8080ssl")
+
+Setting up a domain name and a secure connection is now just two commands. Let's call the example project `docker-frontproxy-example.test`
+
+```bash
+# add domain to /etc/hosts
+sudo hostess add docker-frontproxy-example.test 127.0.0.1
+
+# add server to front proxy
+# use the nginx container name from docker-compose.yml
+./nginx-frontproxy add-server docker-frontproxy-example.test nginx-frontproxy-example-nginx
+```
+
+Open firefox with `https://docker-frontproxy-example.test` and you can visit the same example project wrapped with `docker-nginx-frontproxy` and ssl enabled.
+
+![docker-frontend-example-test](https://raw.githubusercontent.com/afeefacode/docker-nginx-frontproxy/main/docs/docker-frontend-example-test.png "docker-frontend-example-test")

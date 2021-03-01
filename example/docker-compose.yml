@@ -1,0 +1,45 @@
+version: '3'
+
+services:
+
+  nginx:
+    container_name: nginx-frontproxy-example-nginx
+    image: nginx
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./api:/app
+    ports:
+      - "8080:80"
+    networks:
+      - default
+      - nginx-frontproxy
+
+  php:
+    container_name: nginx-frontproxy-example-php
+    hostname: api
+    image: php:7.4-fpm
+    working_dir: /app
+    volumes:
+      - ./api:/app
+
+  admin:
+    container_name: nginx-frontproxy-example-admin
+    hostname: admin
+    image: node:12
+    working_dir: /app
+    volumes:
+      - ./admin:/app
+    command: bash -c "npm install && npm start"
+
+  frontend:
+    container_name: nginx-frontproxy-example-frontend
+    hostname: frontend
+    image: node:12
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+    command: bash -c "npm install && npm start"
+
+networks:
+  nginx-frontproxy:
+    external: true
