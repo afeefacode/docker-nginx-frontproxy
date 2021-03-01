@@ -49,15 +49,23 @@ To access these projects from the host machine, e.g. via `http://project1.test`,
 
 ### Install
 
-Checkout the project, install the cli, setup ssl certificates and localhost, start the docker container:
-
 ```bash
+# 1. checkout the project
 git clone git@github.com:afeefacode/docker-nginx-frontproxy.git
 cd docker-nginx-frontproxy
+# 2. install the cli
 composer install
+# 3. setup ssl and localhost
 ./nginx-frontproxy setup
+# 4. start the front proxy
 docker-compose up
 ```
+
+The cli `setup` command will create a certificate authority which is later used to generate ssl certificates for our domains. In order to have the browser accept those certificates, you need to import the certificate authority into your particular browser.
+
+![import-ca](https://raw.githubusercontent.com/afeefacode/docker-nginx-frontproxy/main/docs/import-ca.png "import-ca")
+
+The location of the generated ca file to import is: `docker-nginx-frontproxy/servers/ca/ca.pem`.
 
 ## Adding a server
 
