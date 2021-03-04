@@ -20,7 +20,11 @@ class ListServers extends Command
             if (!$vhostFileInfo->isDot() && $vhostFileInfo->isFile() && preg_match('/\.conf/', $vhostFileInfo)) {
                 $serverName = preg_replace('/.conf$/', '', $vhostFileInfo);
                 if ($serverName !== 'localhost') {
-                    $vhosts[] = $serverName;
+                    $content = file_get_contents($vhostFileInfo->getRealPath());
+                    $container = preg_replace('/.+set \$example "(.+?)".+/s', '$1', $content);
+                    $container = preg_replace('/172.17.0.1/', 'localhost', $container);
+
+                    $vhosts[] = $serverName . ' -> ' . $container;
                 }
             }
         }
