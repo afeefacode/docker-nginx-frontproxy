@@ -24,12 +24,13 @@ class GenerateCert extends Action
         $certFilename = Path::join($certPath, "{$serverName}");
 
         $extConfTemplate = Path::join(__DIR__, '..', 'templates', 'ext.conf');
-        $extConf = Path::join(__DIR__, '..', 'templates', 'ext_issue.conf');
-        $altName = "DNS:{$serverName},DNS:*.{$serverName}";
+        $extConf = Path::join($certPath, "{$serverName}.ext.conf");
 
-        $str = file_get_contents($extConfTemplate);
-        $str = str_replace('[altName]', $altName, $str);
-        file_put_contents($extConf, $str);
+        // create a custom ext.conf file
+        $this->runProcess("cp {$extConfTemplate} {$extConf}");
+        $this->renderFile($extConf, [
+            'ALT_NAME' => "DNS:{$serverName},DNS:*.{$serverName}"
+        ]);
 
         $this->runProcesses([
             "openssl genrsa -out {$certFilename}.key 2048",
@@ -46,7 +47,6 @@ class GenerateCert extends Action
                     -out {$certFilename}.crt
                     -extfile {$extConf}",
             "rm {$certFilename}.csr",
-            "rm {$certFilename}.seq",
             "rm {$extConf}"
         ]);
 
