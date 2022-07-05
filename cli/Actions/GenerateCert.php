@@ -23,17 +23,21 @@ class GenerateCert extends Action
         $certPath = Path::join(getcwd(), 'servers', 'certs');
         $certFilename = Path::join($certPath, "$serverName");
 
-        $extConf = Path::join(__DIR__, '..', 'templates', 'ext.conf');
+        $extConfTemplate = Path::join(__DIR__, '..', 'templates', 'ext.conf');
+        $extConf = Path::join(__DIR__, '..', 'templates', 'ext_issue.conf');
         $altName = "DNS:$serverName,DNS:*.$serverName";
+
+        $str=file_get_contents($extConfTemplate);
+        $str=str_replace('[altName]',$altName,$str);
+        file_put_contents($extConf, $str);
 
         $this->runProcesses([
             "openssl genrsa -out $certFilename.key 2048",
 
-            "openssl req -subj '/CN=$serverName' -extensions v3_req -sha256 -new
+            "openssl req -subj '/CN=$serverName' -sha256 -new
                 -key $certFilename.key -out $certFilename.csr",
 
-            "export ALTNAME=$altName;
-                openssl x509 -req -days 900 -sha256
+            "openssl x509 -req -days 900 -sha256
                     -in $certFilename.csr
                     -CA $caFilename.pem
                     -CAkey $caFilename.key
@@ -42,7 +46,8 @@ class GenerateCert extends Action
                     -out $certFilename.crt
                     -extfile $extConf",
             "rm $certFilename.csr",
-            "rm $certFilename.seq"
+            "rm $certFilename.seq",
+            "rm $extConf"
         ]);
 
         $relativePath = Path::makeRelative("$certFilename.crt", getcwd());
