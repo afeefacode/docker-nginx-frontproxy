@@ -43,6 +43,7 @@ class RemoveServer extends Command
 
         $serverName = $this->getArgument('serverName');
         if (!$serverName || !in_array($serverName, $vhosts)) {
+            sort($vhosts);
             $serverName = $this->printChoice('Please select a vhost to remove', $vhosts);
         }
 
