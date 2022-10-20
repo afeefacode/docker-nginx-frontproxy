@@ -28,7 +28,7 @@ class AddServer extends Command
 
     protected function executeCommand()
     {
-        $caFilename = Path::join(getcwd(), 'servers', 'ca', 'ca.pem');
+        $caFilename = Path::join(getenv('NGINX_FRONTPROXY_PATH'), 'servers', 'ca', 'ca.pem');
         if (!file_exists($caFilename)) {
             $this->abortCommand('A certificate authority needs to be created. Please run the setup command.');
         }

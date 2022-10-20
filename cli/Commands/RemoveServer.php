@@ -21,7 +21,7 @@ class RemoveServer extends Command
 
     protected function executeCommand()
     {
-        $pathVhosts = Path::join(getcwd(), 'servers', 'vhosts');
+        $pathVhosts = Path::join(getenv('NGINX_FRONTPROXY_PATH'), 'servers', 'vhosts');
         if (!file_exists($pathVhosts)) {
             $this->abortCommand('Please run the setup command.');
         }
@@ -46,13 +46,13 @@ class RemoveServer extends Command
             $serverName = $this->printChoice('Please select a vhost to remove', $vhosts);
         }
 
-        $pathServers = Path::join(getcwd(), 'servers');
+        $pathServers = Path::join(getenv('NGINX_FRONTPROXY_PATH'), 'servers');
 
         $this->runProcesses([
-            "rm -f $pathServers/certs/$serverName.crt",
-            "rm -f $pathServers/certs/$serverName.key",
-            "rm -rf $pathServers/public/$serverName",
-            "rm -rf $pathServers/vhosts/$serverName.conf"
+            "rm -f {$pathServers}/certs/{$serverName}.crt",
+            "rm -f {$pathServers}/certs/{$serverName}.key",
+            "rm -rf {$pathServers}/public/{$serverName}",
+            "rm -rf {$pathServers}/vhosts/{$serverName}.conf"
         ]);
 
         $this->runAction(ReloadNginx::class);

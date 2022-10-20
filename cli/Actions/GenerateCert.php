@@ -17,10 +17,10 @@ class GenerateCert extends Action
     {
         $serverName = $this->getArgument('serverName');
 
-        $caPath = Path::join(getcwd(), 'servers', 'ca');
+        $caPath = Path::join(getenv('NGINX_FRONTPROXY_PATH'), 'servers', 'ca');
         $caFilename = Path::join($caPath, 'ca');
 
-        $certPath = Path::join(getcwd(), 'servers', 'certs');
+        $certPath = Path::join(getenv('NGINX_FRONTPROXY_PATH'), 'servers', 'certs');
         $certFilename = Path::join($certPath, "{$serverName}");
 
         $extConfTemplate = Path::join(__DIR__, '..', 'templates', 'ext.conf');
@@ -50,7 +50,7 @@ class GenerateCert extends Action
             "rm {$extConf}"
         ]);
 
-        $relativePath = Path::makeRelative("{$certFilename}.crt", getcwd());
+        $relativePath = Path::makeRelative("{$certFilename}.crt", getenv('NGINX_FRONTPROXY_PATH'));
         $this->printBullet("<info>Finish</info>: created {$relativePath}");
     }
 }

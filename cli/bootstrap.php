@@ -5,8 +5,11 @@ use Afeefa\NginxFrontProxy\Commands\AddServer;
 use Afeefa\NginxFrontProxy\Commands\ListServers;
 use Afeefa\NginxFrontProxy\Commands\RemoveServer;
 use Afeefa\NginxFrontProxy\Commands\Setup;
+use Webmozart\PathUtil\Path;
 
 require_once __DIR__ . '/../vendor/autoload.php';
+
+putenv('NGINX_FRONTPROXY_PATH=' . Path::join(__DIR__, '..'));
 
 (new Cli('Nginx Frontproxy'))
     ->command('setup', Setup::class, 'Run initial setup')

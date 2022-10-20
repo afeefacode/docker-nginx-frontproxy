@@ -9,7 +9,7 @@ class ListServers extends Command
 {
     protected function executeCommand()
     {
-        $pathVhosts = Path::join(getcwd(), 'servers', 'vhosts');
+        $pathVhosts = Path::join(getenv('NGINX_FRONTPROXY_PATH'), 'servers', 'vhosts');
         if (!file_exists($pathVhosts)) {
             $this->abortCommand('Please run the setup command.');
         }
