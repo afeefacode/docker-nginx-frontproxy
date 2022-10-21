@@ -25,7 +25,7 @@ services:
   admin:
     container_name: nginx-frontproxy-example-admin
     hostname: admin
-    image: node:12
+    image: node:16
     working_dir: /app
     volumes:
       - ./admin:/app
@@ -34,7 +34,7 @@ services:
   frontend:
     container_name: nginx-frontproxy-example-frontend
     hostname: frontend
-    image: node:12
+    image: node:16
     working_dir: /app
     volumes:
       - ./frontend:/app
