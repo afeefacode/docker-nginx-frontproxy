@@ -5,7 +5,7 @@ namespace Afeefa\NginxFrontProxy\Commands;
 use Afeefa\Component\Cli\Command;
 use Afeefa\NginxFrontProxy\Actions\ReloadNginx;
 use Symfony\Component\Console\Input\InputArgument;
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 
 class RemoveServer extends Command
 {

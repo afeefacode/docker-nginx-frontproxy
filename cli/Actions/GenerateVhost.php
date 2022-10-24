@@ -3,7 +3,7 @@
 namespace Afeefa\NginxFrontProxy\Actions;
 
 use Afeefa\Component\Cli\Action;
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 
 class GenerateVhost extends Action
 {

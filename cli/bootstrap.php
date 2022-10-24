@@ -6,7 +6,7 @@ use Afeefa\NginxFrontProxy\Commands\ListServers;
 use Afeefa\NginxFrontProxy\Commands\RegenerateAllCerts;
 use Afeefa\NginxFrontProxy\Commands\RemoveServer;
 use Afeefa\NginxFrontProxy\Commands\Setup;
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 

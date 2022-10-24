@@ -6,7 +6,7 @@ use Afeefa\Component\Cli\Command;
 use Afeefa\NginxFrontProxy\Actions\GenerateCert;
 use Afeefa\NginxFrontProxy\Actions\ReloadNginx;
 use Afeefa\NginxFrontProxy\Helpers;
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 
 class RegenerateAllCerts extends Command
 {

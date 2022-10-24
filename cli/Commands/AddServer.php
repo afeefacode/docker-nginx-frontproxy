@@ -7,7 +7,7 @@ use Afeefa\NginxFrontProxy\Actions\GenerateCert;
 use Afeefa\NginxFrontProxy\Actions\GenerateVhost;
 use Afeefa\NginxFrontProxy\Actions\ReloadNginx;
 use Symfony\Component\Console\Input\InputArgument;
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 
 class AddServer extends Command
 {
