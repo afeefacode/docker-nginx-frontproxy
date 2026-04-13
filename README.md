@@ -86,6 +86,37 @@ The cli `setup` command will create a certificate authority which is later used 
 
 The location of the generated ca file to import is: `docker-nginx-frontproxy/servers/ca/ca.pem`.
 
+### Importing the CA into Chromium (Snap)
+
+Chromium installed via Snap uses its own certificate store located at `~/snap/chromium/current/.pki/nssdb/`. The browser's built-in import dialog may not work due to Snap sandboxing restrictions. Use `certutil` on the command line instead:
+
+```bash
+# List installed CAs
+certutil -d sql:~/snap/chromium/current/.pki/nssdb -L
+
+# Import CA
+certutil -d sql:~/snap/chromium/current/.pki/nssdb -A -t "C,," -n "my-ca" -i servers/ca/ca.pem
+
+# Remove CA (e.g. after renewal)
+certutil -d sql:~/snap/chromium/current/.pki/nssdb -D -n "my-ca"
+```
+
+After importing, restart Chromium for the changes to take effect.
+
+### Renewing expired certificates
+
+The CA and all domain certificates expire after 900 days. To renew:
+
+```bash
+# 1. Regenerate the CA (confirm overwrite when prompted)
+./nginx-frontproxy setup
+
+# 2. Re-sign all domain certificates
+./nginx-frontproxy renew-certs
+
+# 3. Replace the CA in your browser (see above)
+```
+
 ## Adding a server
 
 Just pass a local domain name and a corresponding docker container name. You may specify a port (if other than 80).
